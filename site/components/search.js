@@ -54,9 +54,11 @@ return html`
     }
 
     async function search(text, embeddings){
+        const alphabet = '_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-';
         const emb = await generateEmbedding(text);
         return embeddings.map(e=>{
-            e.cosim = cosineSimilarity(emb, e.embedding);
+            const embedding = e.embedding.split('').map(c=>(alphabet.indexOf(c) / 31.5) - 1);
+            e.cosim = cosineSimilarity(emb, embedding);
             return e;
         }).sort((a,b)=>b.cosim-a.cosim).slice(0,5);
     }
