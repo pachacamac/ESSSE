@@ -1,7 +1,7 @@
 module.exports = function (content) {
 return html`
 
-<input id="searchbox" type="text" placeholder="search ...">
+<input style="width: 100%;" id="searchbox" type="text" placeholder="search ...">
 <div style="border: 1px solid silver; padding: 0 1em;" id="searchresults"></div>
 
 <script type="module">
