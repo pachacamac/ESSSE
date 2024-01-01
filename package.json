@@ -1,0 +1,17 @@
+{
+  "name": "js_embedding_search",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "sessg --sd site build components --serve 8080 --watch --rmd --plugins node_modules/sessg/plugins/analysis.js",
+    "build": "sessg --sd site build components --rmd",
+    "conv": "node conv.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@xenova/transformers": "^2.13.0",
+    "sessg": "^1.0.1"
+  }
+}

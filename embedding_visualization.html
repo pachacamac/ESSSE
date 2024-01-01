@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Embedding Search</title>
+<style>
+    *{padding:0; margin:0; box-sizing: border-box;}
+    body{padding:1em; background: #333; color: #eee; font-size: 0.9em;}
+    .inp{display:inline-block; background: #111; color: #eee; padding: 5px 10px;}
+</style>
+</head>
+<body>
+    <div style="display: flex;">
+        <input class="inp" id="txtin" placeholder="text here" type="text" style="flex-grow: 1;">
+        <button class="inp" id="btn">do it</button>
+    </div>
+    
+    <script type="module">
+        //https://xenova.github.io/transformers.js/
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers';
+        const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+        
+        function debounce(callback, wait) {
+            let timeoutId = null;
+            return (...args) => {
+                window.clearTimeout(timeoutId);
+                timeoutId = window.setTimeout(() => {
+                callback(...args);
+                }, wait);
+            };
+        }
+        function dotProduct(x, y) {
+            let result = 0;
+            for (let i = 0, l = Math.min(x.length, y.length); i < l; i += 1) {
+                result += x[i] * y[i];
+            }
+            return result;
+        }
+
+        function normalize(x) {
+            let result = 0;
+            for (let i = 0, l = x.length; i < l; i += 1) {
+                result += x[i]**2;
+            }
+            return Math.sqrt(result);
+        }
+
+        function cosineSimilarity(x, y) {
+            return dotProduct(x, y) / (normalize(x) * normalize(y));
+        }
+
+        function displayEmbedding(emb, txt, normalize=true){
+            const wrap = document.createElement('div');
+            wrap.style.display='flex';
+            wrap.style.marginTop='2px';
+            wrap.title = txt;
+
+            if(normalize){
+                const emin = Math.min(...emb);
+                const emax = Math.max(...emb);
+                emb = emb.map(e => (e - emin) * 2 / (emax - emin) - 1);
+            }
+            emb.forEach(e => {
+                let vd = document.createElement('div');
+                let hue = (e + 1) * 180; // scale e from [-1, 1] to [0, 360] for full hue spectrum
+                vd.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+                vd.style.width = '4px';
+                vd.style.height = '10px';
+                vd.title = e
+                wrap.appendChild(vd);
+            });
+            const wrapHead = document.createElement('div');
+            wrapHead.textContent = txt;
+            document.body.appendChild(wrapHead);
+            document.body.appendChild(wrap);
+        }
+
+        document.getElementById('btn').addEventListener('click', async ()=>{
+            const txt = document.getElementById('txtin').value;
+            document.getElementById('txtin').value = '';
+            const output = await extractor([txt], { pooling: 'mean', normalize: true });
+            console.log(output.data);
+            displayEmbedding(output.data, txt, false);
+            window.data = output.data;
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
