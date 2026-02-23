@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "sessg --sd site build components --serve 8080 --watch --rmd --plugins node_modules/sessg/plugins/analysis.js",
-    "build": "sessg --sd site build components --rmd",
+    "serve": "sessg --sd site dist components --serve 8080 --watch --rmd --plugins node_modules/sessg/plugins/analysis.js",
+    "build": "sessg --sd site dist components --rmd",
     "conv": "node conv.js"
   },
   "author": "",
